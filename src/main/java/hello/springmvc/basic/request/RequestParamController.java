@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Map;
 
 @Slf4j
 @Controller
@@ -53,9 +54,27 @@ public class RequestParamController {
     @RequestMapping("/request-param-required")
     public String requestParamRequired(
             @RequestParam(required = true) String username,
-            @RequestParam int age) {
-
+            @RequestParam(required = false) Integer age
+            //Integer로 하면 먹지만 int로 하면 안된다? -> Integer는 객체형테이기 때문에 null이 가능하지만, int는 null이 되지않기 때문
+    ) {
         log.info("username = {}, age = {}", username, age);
+        return "ok";
+    }
+
+    @ResponseBody
+    @RequestMapping("/request-param-default")
+    public String requestParamDefault(
+            @RequestParam(required = true, defaultValue = "guest") String username,
+            @RequestParam(required = false, defaultValue = "-1") int age
+    ) {
+        log.info("username = {}, age = {}", username, age);
+        return "ok";
+    }
+
+    @ResponseBody
+    @RequestMapping("/request-param-map")
+    public String requestParamMap(@RequestParam Map<String, Object> paramMap) {
+        log.info("username = {}, age = {}", paramMap.get("username"), paramMap.get("age"));
         return "ok";
     }
 }
